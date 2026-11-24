@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CI 2026/27 · Research Presentation · Kacper Drożdż</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-page: #f8fafc;
+            --bg-slide: #ffffff;
+            --border-subtle: #e2e8f0;
+            --border-card: #e5e7eb;
+            --text-heading: #0f172a;
+            --text-body: #334155;
+            --text-muted: #64748b;
+            --primary: #1d4ed8;
+            --primary-bg: #eff6ff;
+            --primary-border: #bfdbfe;
+            --accent-emerald: #047857;
+            --accent-emerald-bg: #f0fdf4;
+            --accent-emerald-border: #bbf7d0;
+            --accent-amber: #b45309;
+            --accent-amber-bg: #fffbeb;
+            --accent-amber-border: #fde68a;
+            --card-shadow: 0 1px 3px rgba(15, 23, 42, 0.05), 0 4px 12px rgba(15, 23, 42, 0.03);
+            --header-line: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-body);
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            user-select: none;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        code, .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .slide-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            max-height: 100vh;
+            padding: clamp(1.25rem, 2.8vh, 2.25rem) clamp(1.75rem, 4vw, 4rem);
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: var(--bg-slide);
+            box-sizing: border-box;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .slide.active {
+            display: flex;
+            animation: slideIn 0.22s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0.88; transform: scale(0.996); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .slide-header {
+            flex-shrink: 0;
+            border-bottom: 1px solid var(--header-line);
+            padding-bottom: clamp(0.5rem, 1vh, 0.75rem);
+            margin-bottom: clamp(0.75rem, 1.8vh, 1.25rem);
+        }
+
+        .meta-tag {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .meta-tag .tag-badge {
+            background: var(--primary-bg);
+            border: 1px solid var(--primary-border);
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.625rem;
+        }
+
+        .meta-tag .tag-badge-emerald {
+            background: var(--accent-emerald-bg);
+            border: 1px solid var(--accent-emerald-border);
+            color: var(--accent-emerald);
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.625rem;
+        }
+
+        .meta-tag .tag-badge-amber {
+            background: var(--accent-amber-bg);
+            border: 1px solid var(--accent-amber-border);
+            color: var(--accent-amber);
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.625rem;
+        }
+
+        .plot-frame {
+            background: #ffffff;
+            border: 1px solid var(--border-card);
+            border-radius: 0.65rem;
+            padding: 0.55rem 0.75rem;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .plot-frame img {
+            max-width: 100%;
+            max-height: 41vh;
+            width: auto;
+            height: auto;
+            display: block;
+            object-fit: contain;
+        }
+
+        .stat-box {
+            background: var(--bg-page);
+            border: 1px solid var(--border-card);
+            border-radius: 0.55rem;
+            padding: 0.5rem 0.75rem;
+            text-align: center;
+        }
+
+        .stat-val {
+            font-size: clamp(1.1rem, 2vh, 1.35rem);
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1.15;
+        }
+
+        .stat-lbl {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            margin-top: 0.15rem;
+            font-weight: 600;
+        }
+
+        .compact-table th {
+            padding: 0.48rem 0.65rem;
+            font-size: 0.64rem;
+        }
+
+        .compact-table td {
+            padding: 0.52rem 0.65rem;
+            font-size: clamp(0.72rem, 1.2vh, 0.82rem);
+        }
+
+        .slide-title {
+            font-size: clamp(1.4rem, 2.5vh, 1.85rem);
+            font-weight: 800;
+            color: var(--text-heading);
+            letter-spacing: -0.025em;
+            line-height: 1.2;
+        }
+
+        .slide-subtitle {
+            font-size: clamp(0.75rem, 1.2vh, 0.85rem);
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+            font-weight: 500;
+        }
+
+        .slide-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 0;
+            gap: clamp(0.6rem, 1.4vh, 1rem);
+        }
+
+        .panel {
+            background: var(--bg-slide);
+            border: 1px solid var(--border-card);
+            border-radius: 0.65rem;
+            padding: clamp(0.85rem, 1.8vh, 1.25rem);
+            box-shadow: var(--card-shadow);
+            position: relative;
+        }
+
+        .panel-primary {
+            background: var(--primary-bg);
+            border: 1px solid var(--primary-border);
+        }
+
+        .panel-emerald {
+            background: var(--accent-emerald-bg);
+            border: 1px solid var(--accent-emerald-border);
+        }
+
+        .panel-amber {
+            background: var(--accent-amber-bg);
+            border: 1px solid var(--accent-amber-border);
+        }
+
+        .panel-title {
+            font-size: clamp(0.95rem, 1.6vh, 1.15rem);
+            font-weight: 700;
+            color: var(--text-heading);
+            letter-spacing: -0.015em;
+            margin-bottom: 0.4rem;
+        }
+
+        .section-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            margin-bottom: 0.35rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: clamp(0.75rem, 1.6vw, 1.25rem);
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(0.65rem, 1.4vw, 1rem);
+        }
+
+        .grid-3-2 {
+            display: grid;
+            grid-template-columns: 1.8fr 1.2fr;
+            gap: clamp(0.75rem, 1.6vw, 1.25rem);
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: clamp(0.5rem, 1.2vw, 0.85rem);
+        }
+
+        .grid-5 {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: clamp(0.45rem, 1vw, 0.75rem);
+        }
+
+        p, li {
+            font-size: clamp(0.8rem, 1.4vh, 0.9rem);
+            line-height: 1.5;
+            color: var(--text-body);
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        ul.bullet-list li {
+            position: relative;
+            padding-left: 1.1rem;
+            margin-bottom: 0.4rem;
+        }
+
+        ul.bullet-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0.2rem;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* Literature Matrix Table */
+        .lit-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: clamp(0.76rem, 1.3vh, 0.86rem);
+            background: var(--bg-slide);
+            border-radius: 0.65rem;
+            overflow: hidden;
+            border: 1px solid var(--border-card);
+            box-shadow: var(--card-shadow);
+        }
+
+        .lit-table th {
+            background: var(--primary-bg);
+            color: var(--primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.68rem;
+            letter-spacing: 0.05em;
+            padding: 0.7rem 0.9rem;
+            text-align: left;
+            border-bottom: 1px solid var(--primary-border);
+        }
+
+        .lit-table td {
+            padding: 0.8rem 0.9rem;
+            border-bottom: 1px solid var(--border-subtle);
+            vertical-align: top;
+            line-height: 1.45;
+            color: var(--text-body);
+        }
+
+        .lit-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .lit-link {
+            display: inline-block;
+            margin-top: 0.25rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            background: var(--primary-bg);
+            border: 1px solid var(--primary-border);
+            padding: 0.12rem 0.45rem;
+            border-radius: 4px;
+        }
+
+        .lit-link:hover {
+            text-decoration: underline;
+        }
+
+        .slide-footer {
+            flex-shrink: 0;
+            margin-top: clamp(0.65rem, 1.4vh, 1rem);
+            padding-top: clamp(0.45rem, 1vh, 0.75rem);
+            border-top: 1px solid var(--header-line);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.75rem;
+        }
+
+        .footer-message {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--text-body);
+            background: var(--primary-bg);
+            border: 1px solid var(--primary-border);
+            padding: 0.35rem 0.85rem;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .footer-message strong {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .footer-counter {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: var(--border-subtle);
+            padding: 0.25rem 0.65rem;
+            border-radius: 4px;
+        }
+
+        .slide-dots {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .slide-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--border-card);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .slide-dot.active {
+            width: 20px;
+            border-radius: 4px;
+            background: var(--primary);
+        }
+
+        .keyboard-hint {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        @media print {
+            body {
+                overflow: visible !important;
+                background: #ffffff !important;
+                color: #0f172a !important;
+            }
+            .slide-container {
+                display: block !important;
+                height: auto !important;
+            }
+            .slide {
+                display: flex !important;
+                page-break-after: always;
+                page-break-inside: avoid;
+                width: 100vw !important;
+                height: 100vh !important;
+                background: #ffffff !important;
+                color: #0f172a !important;
+                border: none !important;
+                box-shadow: none !important;
+            }
+            .slide-dots, .keyboard-hint {
+                display: none !important;
+            }
+            @page {
+                size: landscape;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="slide-container">
+
+        <!-- ========================================== -->
+        <!-- SLIDE 1: Candidate Ideas & Selected Topic -->
+        <!-- ========================================== -->
+        <div class="slide active" id="slide-1">
+            <header class="slide-header">
+                <div class="meta-tag">
+                    <span class="tag-badge">Class 2 · Pitch</span>
+                    <span>Computational Intelligence · Project Classes 2026/27</span>
+                </div>
+                <h1 class="slide-title">Candidate Ideas & Selected Research Topic</h1>
+                <p class="slide-subtitle">Simple comparison: Idea 1 saves expensive medical labels, while Idea 2 (noisy labels) and Idea 3 (optimizers) are less practical for clinical data.</p>
+            </header>
+
+            <main class="slide-body">
+                <div class="grid-3-2">
+                    <div class="panel panel-primary" style="display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <span style="background: var(--primary); color: #ffffff; font-size: 0.65rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 4px; text-transform: uppercase;">
+                                    Selected Topic (Idea 1 · Recommended)
+                                </span>
+                                <span style="font-size: 0.72rem; font-weight: 600; color: var(--primary);">
+                                    Label-Efficient Learning
+                                </span>
+                            </div>
+                            <h2 class="panel-title" style="font-size: clamp(1.15rem, 1.9vh, 1.4rem); line-height: 1.25; margin-bottom: 0.5rem;">
+                                Pool-Based Active Learning for Medical Classification
+                            </h2>
+                            <p style="margin-bottom: 0.6rem;">
+                                My main topic tests if <strong>Active Learning</strong> (<strong>Uncertainty Sampling</strong> and <strong>Query-By-Committee</strong>) needs fewer labeled patients than passive <strong>Random Sampling</strong> on the <em>Heart Attack Dataset</em>.
+                            </p>
+                        </div>
+                        <div class="grid-2" style="background: rgba(255,255,255,0.75); border: 1px solid var(--border-card); border-radius: 6px; padding: 0.55rem 0.75rem; font-size: 0.78rem;">
+                            <div><strong style="color: var(--primary);">Main Goal:</strong> Save doctor labels &amp; test if data errors trick the model</div>
+                            <div><strong style="color: var(--primary);">Fast Run:</strong> Runs on a normal laptop CPU in under 15 seconds (&lt;15s)</div>
+                        </div>
+                    </div>
+
+                    <div class="panel" style="display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <div class="section-label" style="color: var(--primary);">Team &amp; Scope</div>
+                            <h3 class="panel-title">Solo Project — Kacper Drożdż</h3>
+                            <ul class="bullet-list" style="margin-top: 0.5rem;">
+                                <li><strong>Format:</strong> Individual project (100% my own work and code).</li>
+                                <li><strong>My Tasks:</strong> Check the dataset, build the active learning loop, test 4 methods across 5 random seeds, and run outlier tests.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="section-label" style="margin-bottom: 0.35rem;">Other Candidate Ideas Considered</div>
+                    <div class="grid-2">
+                        <div class="panel" style="padding: 0.75rem 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                                <strong style="font-size: 0.85rem; color: var(--text-heading);">Candidate 2: Learning with Noisy Labels</strong>
+                                <span style="font-size: 0.65rem; font-weight: 700; color: var(--accent-amber); background: var(--accent-amber-bg); padding: 0.1rem 0.45rem; border-radius: 3px;">Backup Idea</span>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-muted); margin: 0;">
+                                Testing how 10% to 40% wrong labels hurt model accuracy, and if filtering bad samples helps.
+                            </p>
+                        </div>
+                        <div class="panel" style="padding: 0.75rem 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                                <strong style="font-size: 0.85rem; color: var(--text-heading);">Candidate 3: Comparing Optimizers (AdamW vs. L-BFGS)</strong>
+                                <span style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); background: var(--border-subtle); padding: 0.1rem 0.45rem; border-radius: 3px;">Discarded</span>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-muted); margin: 0;">
+                                Comparing training speed and batch sizes — dropped to focus on a more practical medical data problem.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <footer class="slide-footer">
+                <div class="footer-message">
+                    <strong>Takeaway</strong>
+                    <span>In short: I choose Active Learning because doctor annotations are expensive, and I want high accuracy with fewer labels.</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="keyboard-hint">Navigate: ← → · Space</div>
+                    <div class="slide-dots" id="dots-1"></div>
+                    <div class="footer-counter">01 / 11</div>
+                </div>
+            </footer>
+        </div>
+
+        <!-- =================================================== -->
+        <!-- SLIDE 2: Research Question, Hypothesis & Motivation -->
+        <!-- =================================================== -->
+        <div class="slide" id="slide-2">
+            <header class="slide-header">
+                <div class="meta-tag">
+                    <span class="tag-badge">Class 2 · Pitch</span>
+                    <span>Computational Intelligence · Project Classes 2026/27</span>
+                </div>
+                <h1 class="slide-title">Research Question, Hypothesis &amp; Motivation</h1>
+                <p class="slide-subtitle">Core comparison: Passive learning asks for labels blindly, while Active Learning asks only about the hardest 50/50 borderline cases.</p>
+            </header>
+
+            <main class="slide-body">
+                <div class="panel panel-primary" style="padding: 0.9rem 1.25rem;">
+                    <div class="section-label" style="color: var(--primary);">Research Question</div>
+                    <p style="font-size: clamp(0.98rem, 1.65vh, 1.18rem); font-weight: 700; color: var(--text-heading); line-height: 1.35; margin: 0;">
+                        How many labeled examples can I save by using Active Learning (Uncertainty Sampling and Query-By-Committee) compared to passive Random Sampling to reach the same accuracy on heart attack data?
+                    </p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="panel" style="display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <div class="section-label" style="color: var(--primary);">Hypothesis</div>
+                            <h3 class="panel-title" style="font-size: 1.05rem;">I Expect 30%–40% Saved Labels</h3>
+                            <p style="margin-bottom: 0.6rem;">
+                                If the model picks only the most uncertain patients (near the 50/50 boundary) or where a committee of models disagrees, it will reach <strong>95% of full-data Accuracy and F1-score</strong> using <strong>30% to 40% fewer labels</strong> than random sampling.
+                            </p>
+                        </div>
+                        <div class="panel-amber" style="padding: 0.65rem 0.85rem; border-radius: 6px; font-size: 0.78rem;">
+                            <strong style="color: var(--accent-amber); display: block; margin-bottom: 0.2rem;">When can this hypothesis fail?</strong>
+                            If Active Learning picks extreme data errors (outliers) instead of real borderline patients, it will not beat random sampling.
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="section-label" style="color: var(--accent-emerald);">Motivation</div>
+                        <h3 class="panel-title" style="font-size: 1.05rem;">Why This Matters in Medicine</h3>
+                        <ul class="bullet-list" style="margin-top: 0.5rem;">
+                            <li>
+                                <strong>High Labeling Cost:</strong> Collecting raw blood tests is cheap, but paying doctors to diagnose and label cases is slow and expensive.
+                            </li>
+                            <li>
+                                <strong>Smarter Data Choice:</strong> Instead of building a bigger model, I let a simple model choose <strong>which patients are most useful to label next</strong>.
+                            </li>
+                            <li>
+                                <strong>Real Clinical Data:</strong> Medical tables have both strong markers and measurement errors, so I can test when Active Learning works and when it fails.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </main>
+
+            <footer class="slide-footer">
+                <div class="footer-message">
+                    <strong>Takeaway</strong>
+                    <span>The main goal is not to build a complex model, but to reach the same medical accuracy with much less labeled data.</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="keyboard-hint">Navigate: ← → · Space</div>
+                    <div class="slide-dots" id="dots-2"></div>
+                    <div class="footer-counter">02 / 11</div>
+                </div>
+            </footer>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- SLIDE 3: Anchor Paper & Accessible Dataset     -->
+        <!-- ============================================== -->
+        <div class="slide" id="slide-3">
+            <header class="slide-header">
+                <div class="meta-tag">
+                    <span class="tag-badge">Class 2 · Pitch</span>
+                    <span>Computational Intelligence · Project Classes 2026/27</span>
+                </div>
+                <h1 class="slide-title">Anchor Paper &amp; Candidate Dataset</h1>
+                <p class="slide-subtitle">Theory vs. Practice: Settles (2010) provides the mathematical query methods, and my 1,319-patient dataset lets me test them on real clinical data.</p>
+            </header>
+
+            <main class="slide-body">
+                <div class="grid-2">
+                    <div class="panel panel-primary" style="display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <div class="section-label" style="color: var(--primary);">Anchor Paper</div>
+                            <h2 class="panel-title" style="font-size: 1.18rem; margin-bottom: 0.2rem;">
+                                Active Learning Literature Survey
+                            </h2>
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.65rem;">
+                                Burr Settles (2010) · University of Wisconsin–Madison
+                            </div>
+
+                            <div style="margin-bottom: 0.65rem;">
+                                <strong style="color: var(--primary); font-size: 0.82rem;">Main Idea:</strong>
+                                <p style="margin-top: 0.15rem;">
+                                    A model reaches high accuracy with much fewer labels if it can choose which unlabeled data points to ask about next.
+                                </p>
+                            </div>
+
+                            <div>
+                                <strong style="color: var(--primary); font-size: 0.82rem;">3 Methods I Take From This Paper:</strong>
+                                <ul class="bullet-list" style="margin-top: 0.3rem;">
+                                    <li><strong>Pool-Based Loop:</strong> Start with a small labeled set and pick new samples step-by-step from a large unlabeled pool.</li>
+                                    <li><strong>Uncertainty Sampling:</strong> Pick patients where the model is least sure (closest to 50/50 probability).</li>
+                                    <li><strong>Query-By-Committee (QBC):</strong> Three models vote, and the algorithm picks the patient where they disagree the most.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="panel-amber" style="padding: 0.55rem 0.8rem; border-radius: 6px; font-size: 0.76rem;">
+                            <strong style="color: var(--accent-amber);">Key Limitation (Settles Sec. 3.6):</strong>
+                            Uncertainty Sampling can accidentally pick extreme outliers near the boundary instead of typical patients.
+                        </div>
+                    </div>
+
+                    <div class="panel" style="display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <div class="section-label" style="color: var(--accent-emerald);">Candidate Dataset (Kaggle)</div>
+                            <h2 class="panel-title" style="font-size: 1.18rem; margin-bottom: 0.2rem;">
+                                Heart Attack Classification Dataset
+                            </h2>
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.65rem;">
+                                File: <code class="font-mono">Heart Attack.csv</code> · 0 Missing Values
+                            </div>
+
+                            <div class="grid-3" style="margin-bottom: 0.65rem; text-align: center;">
+                                <div style="background: var(--bg-page); border: 1px solid var(--border-card); padding: 0.5rem; border-radius: 6px;">
+                                    <div style="font-size: 1.2rem; font-weight: 800; color: var(--primary);">1,319</div>
+                                    <div style="font-size: 0.68rem; color: var(--text-muted);">Patients</div>
+                                </div>
+                                <div style="background: var(--bg-page); border: 1px solid var(--border-card); padding: 0.5rem; border-radius: 6px;">
+                                    <div style="font-size: 1.2rem; font-weight: 800; color: var(--primary);">8</div>
+                                    <div style="font-size: 0.68rem; color: var(--text-muted);">Input Features</div>
+                                </div>
+                                <div style="background: var(--bg-page); border: 1px solid var(--border-card); padding: 0.5rem; border-radius: 6px;">
+                                    <div style="font-size: 1.2rem; font-weight: 800; color: var(--accent-emerald);">61.4%</div>
+                                    <div style="font-size: 0.68rem; color: var(--text-muted);">Positive Cases</div>
+                                </div>
+                            </div>
+
+                            <div style="font-size: 0.8rem; line-height: 1.55;">
+                                <div><strong>8 Clinical Features:</strong> <code class="font-mono" style="font-size: 0.75rem;">age, gender, impluse, pressurehight, pressurelow, glucose, kcm, troponin</code> (7 numerical + 1 binary gender)</div>
+                                <div style="margin-top: 0.25rem;"><strong>Target Class:</strong> <code class="font-mono">positive</code> (810 patients) vs. <code class="font-mono">negative</code> (509 patients)</div>
+                            </div>
+                        </div>
+
+                        <div class="panel-emerald" style="padding: 0.55rem 0.8rem; border-radius: 6px; font-size: 0.76rem;">
+                            <strong style="color: var(--accent-emerald);">Important Finding in My Data:</strong>
+                            The table contains real measurement errors (for example, heart rate <code class="font-mono">impluse = 1111</code> in 3 rows) and strong markers (<code class="font-mono">troponin</code>, <code class="font-mono">kcm</code>). This lets me test if outliers trick Active Learning!
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <footer class="slide-footer">
+                <div class="footer-message">
+                    <strong>Takeaway</strong>
+                    <span>I combine classic Active Learning methods from Settles with a real 1,319-patient dataset that contains both strong signals and noisy outliers.</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="keyboard-hint">Navigate: ← → · Space</div>
+                    <div class="slide-dots" id="dots-3"></div>
+                    <div class="footer-counter">03 / 11</div>
+                </div>
+            </footer>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- SLIDE 4: Baseline, Comparators & Experimental Protocol        -->
+        <!-- ============================================================== -->
+        <div class="slide" id="slide-4">
+            <header class="slide-header">
+                <div class="meta-tag">
+                    <span class="tag-badge">Class 2 · Pitch</span>
+                    <span>Computational Intelligence · Project Classes 2026/27</span>
+                </div>
+                <h1 class="slide-title">Baselines, Active Methods &amp; Fair Protocol</h1>
+                <p class="slide-subtitle">Fair comparison: Every method starts with the exact same 20 patients, uses the same models, and is tested on the same locked 330-patient test set.</p>
+            </header>
+
+            <main class="slide-body">
+                <div class="grid-3">
+                    <div class="panel">
+                        <div class="section-label" style="color: var(--primary);">1. Baselines</div>
+                        <h3 class="panel-title" style="font-size: 1rem;">Passive &amp; Full-Data</h3>
+                        <ul class="bullet-list">
+                            <li><strong>Random Sampling:</strong> Pick 10 random patients from the unlabeled pool in each step.</li>
+                            <li><strong>Full-Data Model:</strong> Train on 100% of the training pool (989 rows) to see the top possible score.</li>
+                            <li><strong>Equal Start:</strong> Every method starts with the exact same 20 balanced samples.</li>
+                        </ul>
+                    </div>
+
+                    <div class="panel panel-primary">
+                        <div class="section-label" style="color: var(--primary);">2. Active Strategies</div>
+                        <h3 class="panel-title" style="font-size: 1rem;">Uncertainty &amp; QBC</h3>
+                        <ul class="bullet-list">
+                            <li><strong>Entropy Sampling:</strong> Pick patients where prediction confidence is lowest.</li>
+                            <li><strong>Margin Sampling:</strong> Pick patients closest to the 50/50 decision boundary.</li>
+                            <li><strong>Query-By-Committee (QBC):</strong> 3 models (LogReg, Random Forest, MLP) vote, and the algorithm picks the most disagreed sample.</li>
+                        </ul>
+                    </div>
+
+                    <div class="panel">
+                        <div class="section-label" style="color: var(--accent-emerald);">3. Evaluation Metrics</div>
+                        <h3 class="panel-title" style="font-size: 1rem;">How I Measure Success</h3>
+                        <ul class="bullet-list">
+                            <li><strong>Learning Curves:</strong> Plot Accuracy and Macro F1-score from 20 up to 300 labeled samples.</li>
+                            <li><strong>Area Under Curve (AULC):</strong> Average score across the whole labeling budget.</li>
+                            <li><strong>Saved Labels (%):</strong> How many fewer labels are needed to reach 95% of the full-data score.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="panel" style="background: var(--bg-page); padding: 0.85rem 1.1rem;">
+                    <div class="section-label" style="color: var(--accent-amber); margin-bottom: 0.4rem;">
+                        4. Four Rules for Fair Comparison &amp; Zero Data Leakage
+                    </div>
+                    <div class="grid-4" style="font-size: 0.78rem;">
+                        <div style="border-right: 1px solid var(--border-card); padding-right: 0.75rem;">
+                            <strong style="color: var(--text-heading); display: block; margin-bottom: 0.2rem;">No Data Leakage</strong>
+                            Lock 25% of data (330 rows) as a fixed test set. Fit <code class="font-mono">StandardScaler</code> only on currently labeled data.
+                        </div>
+                        <div style="border-right: 1px solid var(--border-card); padding-right: 0.75rem;">
+                            <strong style="color: var(--text-heading); display: block; margin-bottom: 0.2rem;">Same Step Loop</strong>
+                            Start with 20 balanced samples and add 10 new samples per step up to 300 labels.
+                        </div>
+                        <div style="border-right: 1px solid var(--border-card); padding-right: 0.75rem;">
+                            <strong style="color: var(--text-heading); display: block; margin-bottom: 0.2rem;">5 Random Seeds</strong>
+                            Repeat every experiment across <strong>5 random seeds</strong> (<code class="font-mono">42, 100, 2026, 7, 99</code>) and plot mean ± std.
+                        </div>
+                        <div>
+                            <strong style="color: var(--text-heading); display: block; margin-bottom: 0.2rem;">Same Base Models</strong>
+                            Use the exact same Logistic Regression and Random Forest settings for all strategies.
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <footer class="slide-footer">
+                <div class="footer-message">
+                    <strong>Takeaway</strong>
+                    <span>Because I lock the test split and run 5 random seeds, any improvement comes strictly from smarter sample selection, not luck or leakage.</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="keyboard-hint">Navigate: ← → · Space</div>
+                    <div class="slide-dots" id="dots-4"></div>
+                    <div class="footer-counter">04 / 11</div>
+                </div>
+            </footer>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- SLIDE 5: Resources, Risks, Fallback & Execution Schedule      -->
+        <!-- ============================================================== -->
+        <div class="slide" id="slide-5">
+            <header class="slide-header">
+                <div class="meta-tag">
+                    <span class="tag-badge">Class 2 · Pitch</span>
+                    <span>Computational Intelligence · Project Classes 2026/27</span>
+                </div>
+                <h1 class="slide-title">Resources, Risks, Fallback Plan &amp; Schedule</h1>
+                <p class="slide-subtitle">Low risk, high control: The whole experiment runs in 15 seconds on a laptop CPU, with a clear backup plan for data outliers and easy features.</p>
+            </header>
+
+            <main class="slide-body">
+                <div class="grid-2">
+                    <div class="panel">
+                        <div class="section-label" style="color: var(--primary);">Computing Resources</div>
+                        <h3 class="panel-title" style="font-size: 1rem;">Fast Local CPU Execution</h3>
+                        <ul class="bullet-list">
+                            <li><strong>Hardware:</strong> Standard laptop CPU — no GPU and no paid cloud API needed.</li>
+                            <li><strong>Tools:</strong> Python with <code class="font-mono">scikit-learn</code>, <code class="font-mono">pandas</code>, <code class="font-mono">numpy</code>, and <code class="font-mono">matplotlib</code>.</li>
+                            <li><strong>Runtime:</strong> Running all 30 steps × 4 strategies × 5 seeds takes <strong>under 15 seconds</strong>, so testing is very fast.</li>
+                        </ul>
+                    </div>
+
+                    <div class="panel panel-primary">
+                        <div class="section-label" style="color: var(--accent-amber);">Risks &amp; Fallback Plan</div>
+                        <h3 class="panel-title" style="font-size: 1rem;">What Can Go Wrong &amp; How I Will Fix It</h3>
+                        <ul class="bullet-list">
+                            <li>
+                                <strong>Risk 1 (Outlier Trap):</strong> Measurement errors like <code class="font-mono">impluse = 1111</code> can trick Uncertainty Sampling into picking noisy outliers.<br>
+                                <span style="color: var(--primary); font-weight: 600;">Solution:</span> Compare Active Learning before and after filtering outliers.
+                            </li>
+                            <li>
+                                <strong>Risk 2 (Task Too Easy):</strong> Strong features like <code class="font-mono">troponin</code> might make all models reach high accuracy too fast.<br>
+                                <span style="color: var(--primary); font-weight: 600;">Fallback Plan:</span> Remove <code class="font-mono">troponin</code> to make the task harder, or add a second dataset.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="section-label" style="color: var(--accent-emerald); margin-bottom: 0.45rem;">
+                        Project Schedule (Classes 2–7)
+                    </div>
+                    <div class="grid-5" style="font-size: 0.76rem;">
+                        <div style="background: var(--bg-page); border: 1px solid var(--border-card); padding: 0.55rem; border-radius: 6px;">
+                            <strong style="color: var(--text-heading); display: block; margin-bottom: 0.2rem;">Class 2</strong>
+                            <span style="color: var(--text-muted);">Topic pitch, research question, Settles paper, data check.</span>
+                        </div>
+                        <div style="background: var(--bg-page); border: 1px solid var(--border-card); padding: 0.55rem; border-radius: 6px;">
+                            <strong style="color: var(--text-heading); display: block; margin-bottom: 0.2rem;">Class 3</strong>
+                            <span style="color: var(--text-muted);">3-paper Literature Matrix, hypothesis, locked splits &amp; protocol.</span>
+                        </div>
+                        <div style="background: var(--bg-page); border: 1px solid var(--border-card); padding: 0.55rem; border-radius: 6px;">
+                            <strong style="color: var(--text-heading); display: block; margin-bottom: 0.2rem;">Class 4</strong>
+                            <span style="color: var(--text-muted);">Working Random Sampling baseline and learning curves.</span>
+                        </div>
+                        <div style="background: var(--bg-page); border: 1px solid var(--border-card); padding: 0.55rem; border-radius: 6px;">
+                            <strong style="color: var(--text-heading); display: block; margin-bottom: 0.2rem;">Class 5</strong>
+                            <span style="color: var(--text-muted);">Compare Uncertainty Sampling and QBC across 5 seeds.</span>
+                        </div>
+                        <div style="background: var(--bg-page); border: 1px solid var(--border-card); padding: 0.55rem; border-radius: 6px;">
+                            <strong style="color: var(--text-heading); display: block; margin-bottom: 0.2rem;">Class 6–7</strong>
+                            <span style="color: var(--text-muted);">Outlier &amp; feature removal tests, final slides and ZIP.</span>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <footer class="slide-footer">
+                <div class="footer-message">
+                    <strong>Takeaway</strong>
+                    <span>Even if Active Learning struggles with raw errors or easy features, my outlier and feature-removal tests turn that into a clear scientific result.</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="keyboard-hint">Navigate: ← → · Space</div>
+                    <div class="slide-dots" id="dots-5"></div>
+                    <div class="footer-counter">05 / 11</div>
+                </div>
+            </footer>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- SLIDE 6: CLASS 3 - LITERATURE MATRIX (3 PAPERS)                -->
+        <!-- ============================================================== -->
+        <div class="slide" id="slide-6">
+            <header class="slide-header">
+                <div class="meta-tag">
+                    <span class="tag-badge-emerald">Class 3 · Literature → Protocol</span>
+                    <span>Solo Requirement: 3 Research Papers &amp; Literature Matrix</span>
+                </div>
+                <h1 class="slide-title">Literature Matrix: 3 Studied Papers</h1>
+                <p class="slide-subtitle">Literature Selection: I selected 3 peer-reviewed papers spanning theoretical query foundations, multi-seed statistical benchmarks, and recent empirical evidence on tabular data.</p>
+            </header>
+
+            <main class="slide-body">
+                <table class="lit-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 11%;">Reader</th>
+                            <th style="width: 24%;">Paper &amp; Direct Link</th>
+                            <th style="width: 25%;">Main Claim &amp; Evidence</th>
+                            <th style="width: 20%;">Key Limitation</th>
+                            <th style="width: 20%;">Use in My Project</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Kacper Drożdż</strong><br><span style="font-size: 0.7rem; color: var(--text-muted);">(Paper 1 · Anchor)</span></td>
+                            <td>
+                                <strong>Settles (2010)</strong><br>
+                                <em>Active Learning Literature Survey</em>, Univ. of Wisconsin–Madison.<br>
+                                <a class="lit-link" href="https://burrsettles.com/pub/settles.activelearning.pdf" target="_blank">PDF Link ↗</a>
+                            </td>
+                            <td>
+                                Pool-based active learning reaches high accuracy with much fewer labels than random sampling by querying uncertain or disagreed points.
+                            </td>
+                            <td>
+                                <strong>Uncertainty Sampling</strong> can waste budget by picking noisy outliers near the decision boundary (Sec. 3.6).
+                            </td>
+                            <td>
+                                Gives the exact loop and math formulas for <strong>Entropy</strong>, <strong>Margin</strong>, and <strong>QBC</strong>.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kacper Drożdż</strong><br><span style="font-size: 0.7rem; color: var(--primary); font-weight: 600;">(Paper 2 · NeurIPS 2024)</span></td>
+                            <td>
+                                <strong>Werner et al. (2024)</strong><br>
+                                <em>A Cross-Domain Benchmark for Active Learning</em>, <strong>NeurIPS 2024</strong>.<br>
+                                <a class="lit-link" href="https://arxiv.org/abs/2408.00426" target="_blank">arXiv:2408.00426 ↗</a>
+                                <a class="lit-link" href="https://proceedings.neurips.cc/paper_files/paper/2024/file/72de9826cfe582e175520f404eaad473-Paper-Datasets_and_Benchmarks_Track.pdf" target="_blank">NeurIPS PDF ↗</a>
+                            </td>
+                            <td>
+                                Tested active learning on tabular, text, and image data. Proved that 1-seed runs are unreliable because results change strongly across random seeds.
+                            </td>
+                            <td>
+                                No single method wins everywhere; heavy deep learning methods are slow and often lose to simple methods on tables.
+                            </td>
+                            <td>
+                                Justifies running every strategy across <strong>5 random seeds</strong> (<code class="font-mono">mean ± std</code>) and using fast tabular models.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kacper Drożdż</strong><br><span style="font-size: 0.7rem; color: var(--accent-emerald); font-weight: 600;">(Paper 3 · TMLR 2025)</span></td>
+                            <td>
+                                <strong>Lu et al. (2025)</strong><br>
+                                <em>An Expanded Benchmark that Rediscovers and Affirms the Edge of Uncertainty Sampling for Active Learning in Tabular Datasets</em>, <strong>TMLR 2025</strong>.<br>
+                                <a class="lit-link" href="https://arxiv.org/abs/2306.08954" target="_blank">arXiv:2306.08954 ↗</a>
+                                <a class="lit-link" href="https://arxiv.org/pdf/2306.08954" target="_blank">PDF Link ↗</a>
+                            </td>
+                            <td>
+                                Tested pool-based active learning across tabular datasets. Showed that classic <strong>Margin &amp; Entropy Sampling</strong> still beat complex new methods on tables.
+                            </td>
+                            <td>
+                                Uncertainty Sampling struggles when the starting labeled pool is too small (cold start) or when noisy points shift the boundary.
+                            </td>
+                            <td>
+                                Supports testing <strong>Margin &amp; Entropy</strong> on <code class="font-mono">Heart Attack.csv</code>, using <strong>AULC</strong>, and testing outlier removal.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </main>
+
+            <footer class="slide-footer">
+                <div class="footer-message">
+                    <strong>Takeaway</strong>
+                    <span>Settles provides my math formulas, Werner proves 1-seed runs are unreliable, and Lu shows Margin Sampling beats complex deep models on tabular datasets.</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="keyboard-hint">Navigate: ← → · Space</div>
+                    <div class="slide-dots" id="dots-6"></div>
+                    <div class="footer-counter">06 / 11</div>
+                </div>
+            </footer>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- SLIDE 7: CLASS 3 - LOCKED EXPERIMENTAL PROTOCOL SUMMARY        -->
+        <!-- ============================================================== -->
+        <div class="slide" id="slide-7">
+            <header class="slide-header">
+                <div class="meta-tag">
+                    <span class="tag-badge-emerald">Class 3 · Literature → Protocol</span>
+                    <span>Hypothesis · Locked Data Splits · Metrics · Comparison Plan</span>
+                </div>
+                <h1 class="slide-title">Class 3 Protocol: Hypothesis, Splits, Metrics &amp; Comparisons</h1>
+                <p class="slide-subtitle">Controlled Benchmark: I lock all experimental parameters before running code — 330 holdout patients, 5 random seeds, zero data leakage, and 2 targeted stress tests.</p>
+            </header>
+
+            <main class="slide-body">
+                <div class="grid-2">
+                    <!-- 1. Hypothesis -->
+                    <div class="panel panel-primary">
+                        <div class="section-label" style="color: var(--primary);">1. Refined Hypothesis (From Literature)</div>
+                        <h3 class="panel-title" style="font-size: 1rem;">Label Savings vs. Outlier Sensitivity</h3>
+                        <ul class="bullet-list">
+                            <li><strong>Main Claim (H₁):</strong> On <code class="font-mono">Heart Attack.csv</code>, <strong>Margin</strong>, <strong>Entropy</strong>, and <strong>QBC</strong> will reach <strong>95% of the full-data Macro F1-score</strong> using <strong>30%–40% fewer labels</strong> than passive Random Sampling (Lu et al., 2025).</li>
+                            <li><strong>Outlier Claim (H₂):</strong> Removing extreme measurement errors (like <code class="font-mono">impluse = 1111</code>) will improve Uncertainty Sampling in early steps (Settles, 2010).</li>
+                        </ul>
+                    </div>
+
+                    <!-- 2. Exact Data Splits -->
+                    <div class="panel">
+                        <div class="section-label" style="color: var(--accent-emerald);">2. Locked Data Splits &amp; Zero Leakage</div>
+                        <h3 class="panel-title" style="font-size: 1rem;">1,319 Total Patients (<code class="font-mono">Heart Attack.csv</code>)</h3>
+                        <ul class="bullet-list">
+                            <li><strong>Locked Test Set (25% = 330 rows):</strong> Separated once at the start with the same class balance, and never used for selection or scaling.</li>
+                            <li><strong>Training Pool (75% = 989 rows):</strong> Divided into starting labeled set |L<sub>0</sub>| = 20 balanced samples (10 positive, 10 negative) and unlabeled pool |U<sub>0</sub>| = 969 rows.</li>
+                            <li><strong>Zero Leakage Rule:</strong> <code class="font-mono">StandardScaler</code> is fitted strictly on the current labeled set L<sub>t</sub> at each step.</li>
+                        </ul>
+                    </div>
+
+                    <!-- 3. Evaluation Metrics -->
+                    <div class="panel">
+                        <div class="section-label" style="color: var(--accent-amber);">3. Evaluation Metrics (Across 5 Seeds)</div>
+                        <h3 class="panel-title" style="font-size: 1rem;">How I Measure Performance</h3>
+                        <ul class="bullet-list">
+                            <li><strong>Learning Curves:</strong> Test Accuracy and Macro F1 measured from 20 to 300 labels (adding 10 labels per step = 29 steps).</li>
+                            <li><strong>Area Under Curve (AULC):</strong> Single summary score of label efficiency across the whole budget (Lu et al., 2025).</li>
+                            <li><strong>Saved Labels (%):</strong> Labels needed to reach 95% of the Full-Data (989 rows) score, reported as <code class="font-mono">mean ± std</code> over 5 seeds (<code class="font-mono">42, 100, 2026, 7, 99</code>).</li>
+                        </ul>
+                    </div>
+
+                    <!-- 4. Comparison Plan -->
+                    <div class="panel panel-emerald">
+                        <div class="section-label" style="color: var(--accent-emerald);">4. Comparison &amp; Ablation Plan</div>
+                        <h3 class="panel-title" style="font-size: 1rem;">Baselines, Active Methods &amp; Stress Tests</h3>
+                        <ul class="bullet-list">
+                            <li><strong>Baselines:</strong> Passive <strong>Random Sampling</strong> + <strong>Full-Data Upper Bound</strong> (trained on all 989 rows).</li>
+                            <li><strong>Active Strategies:</strong> (1) <strong>Entropy Sampling</strong>, (2) <strong>Margin Sampling</strong>, and (3) <strong>Query-By-Committee (QBC)</strong> across LogReg, Random Forest, and MLP.</li>
+                            <li><strong>Stress Tests (Class 5–6):</strong> Raw pool vs. cleaned pool (<code class="font-mono">impluse &lt; 300</code>), and all features vs. removing <code class="font-mono">troponin</code>.</li>
+                        </ul>
+                    </div>
+                </div>
+            </main>
+
+            <footer class="slide-footer">
+                <div class="footer-message">
+                    <strong>Takeaway</strong>
+                    <span>By freezing my test split and refitting scalers only on labeled subsets, I prevent data leakage completely and establish a reproducible benchmark for Class 4.</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="keyboard-hint">Navigate: ← → · Space</div>
+                    <div class="slide-dots" id="dots-7"></div>
+                    <div class="footer-counter">07 / 11</div>
+                </div>
+            </footer>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- SLIDE 8: CLASS 4 - DATA AUDIT                                  -->
+        <!-- ============================================================== -->
+        <div class="slide" id="slide-8">
+            <header class="slide-header">
+                <div class="meta-tag">
+                    <span class="tag-badge-amber">Class 4 · Baseline &amp; Data Check</span>
+                    <span>Data Audit · Heart Attack.csv (1,319 Patients)</span>
+                </div>
+                <h1 class="slide-title">Data Audit: Clean Table, Real Errors &amp; Strong Signal</h1>
+                <p class="slide-subtitle">I checked all 1,319 rows before training any model. There are no missing values, but there are real data errors and one very strong blood feature.</p>
+            </header>
+
+            <main class="slide-body">
+                <div class="grid-4">
+                    <div class="stat-box">
+                        <div class="stat-val">1,319</div>
+                        <div class="stat-lbl">Patients · 8 Features</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-val" style="color: var(--accent-emerald);">0</div>
+                        <div class="stat-lbl">Missing &amp; Duplicate Rows</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-val" style="color: var(--accent-emerald);">61.4% / 38.6%</div>
+                        <div class="stat-lbl">Positive / Negative Split</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-val">989 / 330</div>
+                        <div class="stat-lbl">Train Pool / Locked Test</div>
+                    </div>
+                </div>
+
+                <div class="plot-frame">
+                    <img src="results/plots/fig1_data_audit.png" alt="Data audit: feature power and measurement errors">
+                </div>
+
+                <div class="grid-3">
+                    <div class="panel panel-primary" style="padding: 0.65rem 0.85rem;">
+                        <strong style="font-size: 0.8rem; color: var(--primary); display: block; margin-bottom: 0.15rem;">1. One Dominant Marker</strong>
+                        <p style="font-size: 0.76rem; margin: 0;">On the train pool, <code class="font-mono">troponin</code> alone gets <strong>0.90 ROC-AUC</strong>. Next are <code class="font-mono">kcm</code> (0.67) and <code class="font-mono">age</code> (0.65).</p>
+                    </div>
+                    <div class="panel panel-amber" style="padding: 0.65rem 0.85rem;">
+                        <strong style="font-size: 0.8rem; color: var(--accent-amber); display: block; margin-bottom: 0.15rem;">2. Real Measurement Errors</strong>
+                        <p style="font-size: 0.76rem; margin: 0;"><strong>3 rows</strong> have heart rate = <code class="font-mono">1111</code>, and <strong>11 rows</strong> have low blood pressure higher than high pressure.</p>
+                    </div>
+                    <div class="panel panel-emerald" style="padding: 0.65rem 0.85rem;">
+                        <strong style="font-size: 0.8rem; color: var(--accent-emerald); display: block; margin-bottom: 0.15rem;">3. Safe Train / Test Split</strong>
+                        <p style="font-size: 0.76rem; margin: 0;"><strong>0 rows</strong> overlap between train and test. All 3 <code class="font-mono">1111</code> errors are inside the training pool.</p>
+                    </div>
+                </div>
+            </main>
+
+            <footer class="slide-footer">
+                <div class="footer-message">
+                    <strong>Takeaway</strong>
+                    <span>The dataset is clean enough to run, and real errors plus strong troponin give us great stress tests later.</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="keyboard-hint">Navigate: ← → · Space</div>
+                    <div class="slide-dots" id="dots-8"></div>
+                    <div class="footer-counter">08 / 11</div>
+                </div>
+            </footer>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- SLIDE 9: CLASS 4 - WORKING BASELINE & REPRODUCIBLE SETUP       -->
+        <!-- ============================================================== -->
+        <div class="slide" id="slide-9">
+            <header class="slide-header">
+                <div class="meta-tag">
+                    <span class="tag-badge-amber">Class 4 · Baseline &amp; Data Check</span>
+                    <span>Working Code · Zero Data Leakage · Saved Results</span>
+                </div>
+                <h1 class="slide-title">Working Baseline &amp; Reproducible Setup</h1>
+                <p class="slide-subtitle">I built a fast Python pipeline with zero data leakage and saved every run across 5 random seeds.</p>
+            </header>
+
+            <main class="slide-body">
+                <div class="grid-2">
+                    <div class="panel panel-primary" style="padding: 0.75rem 1rem;">
+                        <div class="section-label" style="color: var(--primary);">No Data Leakage Rules (In Code)</div>
+                        <ul class="bullet-list" style="margin-top: 0.3rem;">
+                            <li><strong>Locked Test Set:</strong> 330 rows (25%) are separated once and saved in <code class="font-mono">locked_split_indices.json</code>.</li>
+                            <li><strong>Safe Scaling:</strong> <code class="font-mono">StandardScaler</code> fits only on the current labeled set in each step — never on the test set.</li>
+                            <li><strong>Random Sampling Loop:</strong> Start with <strong>20 balanced rows</strong> (10 pos, 10 neg) and add <strong>10 random rows</strong> per step up to 300.</li>
+                        </ul>
+                    </div>
+
+                    <div class="panel" style="padding: 0.75rem 1rem;">
+                        <div class="section-label" style="color: var(--accent-emerald);">Reproducible Run Details</div>
+                        <ul class="bullet-list" style="margin-top: 0.3rem;">
+                            <li><strong>5 Fixed Seeds:</strong> <code class="font-mono">42, 100, 2026, 7, 99</code> — every score is reported as <code class="font-mono">mean ± std</code>.</li>
+                            <li><strong>Fast Local Run:</strong> Python 3.14 + <code class="font-mono">scikit-learn</code> on a normal laptop CPU — total time is <strong>28.5 seconds</strong>.</li>
+                            <li><strong>Saved Evidence:</strong> All raw CSV/JSON metrics, seeds, and plots are saved inside <code class="font-mono">results/</code>.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="section-label" style="margin-bottom: 0.35rem;">First Reproducible Baseline Numbers (Locked 330-Patient Test Set · Macro F1)</div>
+                    <table class="lit-table compact-table">
+                        <thead>
+                            <tr>
+                                <th>Model / Baseline</th>
+                                <th>Full-Data (989 rows)</th>
+                                <th>95% Target</th>
+                                <th>Random @20</th>
+                                <th>Random @100</th>
+                                <th>Random @300</th>
+                                <th>AULC (20–300)</th>
+                                <th>Labels for 95%</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Logistic Regression</strong></td>
+                                <td><strong>75.4%</strong> <span style="color: var(--text-muted);">(76.7% Acc)</span></td>
+                                <td>71.6%</td>
+                                <td>62.5 ± 2.6%</td>
+                                <td>68.1 ± 3.8%</td>
+                                <td>74.8 ± 1.9%</td>
+                                <td>0.706 ± 0.032</td>
+                                <td><strong style="color: var(--primary);">118 ± 87</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Random Forest</strong></td>
+                                <td><strong>97.5%</strong> <span style="color: var(--text-muted);">(97.6% Acc)</span></td>
+                                <td>92.6%</td>
+                                <td>80.0 ± 6.4%</td>
+                                <td>95.8 ± 1.4%</td>
+                                <td>97.4 ± 0.3%</td>
+                                <td>0.954 ± 0.013</td>
+                                <td><strong style="color: var(--accent-emerald);">58 ± 22</strong></td>
+                            </tr>
+                            <tr style="background: var(--bg-page);">
+                                <td><strong>Majority Class Floor</strong> <span style="color: var(--text-muted);">(Always Positive)</span></td>
+                                <td>38.1% <span style="color: var(--text-muted);">(61.5% Acc)</span></td>
+                                <td>—</td>
+                                <td>38.1%</td>
+                                <td>38.1%</td>
+                                <td>38.1%</td>
+                                <td>0.381</td>
+                                <td>—</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+
+            <footer class="slide-footer">
+                <div class="footer-message">
+                    <strong>Takeaway</strong>
+                    <span>The baseline pipeline works and sets two clear targets for Active Learning to beat: 118 labels (LogReg) and 58 labels (RF).</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="keyboard-hint">Navigate: ← → · Space</div>
+                    <div class="slide-dots" id="dots-9"></div>
+                    <div class="footer-counter">09 / 11</div>
+                </div>
+            </footer>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- SLIDE 10: CLASS 4 - BASELINE LEARNING CURVES                   -->
+        <!-- ============================================================== -->
+        <div class="slide" id="slide-10">
+            <header class="slide-header">
+                <div class="meta-tag">
+                    <span class="tag-badge-amber">Class 4 · Baseline &amp; Data Check</span>
+                    <span>First Reproducible Evaluation · 20 to 300 Labels (5 Seeds)</span>
+                </div>
+                <h1 class="slide-title">Baseline Learning Curves: Random Forest vs. LogReg</h1>
+                <p class="slide-subtitle">Solid lines show the average over 5 seeds, shaded areas show the spread (± std), and dashed lines show the full-data score (989 rows).</p>
+            </header>
+
+            <main class="slide-body">
+                <div class="plot-frame">
+                    <img src="results/plots/fig2_baseline_curves.png" alt="Baseline learning curves for Macro F1 and Accuracy">
+                </div>
+
+                <div class="grid-2">
+                    <div class="panel panel-emerald" style="padding: 0.7rem 0.95rem;">
+                        <strong style="font-size: 0.85rem; color: var(--accent-emerald); display: block; margin-bottom: 0.2rem;">Random Forest Learns Very Fast</strong>
+                        <p style="font-size: 0.78rem; margin: 0;">
+                            It jumps from <strong>80.0%</strong> (20 labels) to <strong>95.8%</strong> (100 labels) and reaches 95% of full-data Macro F1 in only <strong>~58 random labels</strong>. Decision trees quickly find the sharp <code class="font-mono">troponin</code> cutoff.
+                        </p>
+                    </div>
+                    <div class="panel panel-primary" style="padding: 0.7rem 0.95rem;">
+                        <strong style="font-size: 0.85rem; color: var(--primary); display: block; margin-bottom: 0.2rem;">Logistic Regression Learns Slowly</strong>
+                        <p style="font-size: 0.78rem; margin: 0;">
+                            It grows slowly from <strong>62.5%</strong> to <strong>74.8%</strong> and needs <strong>~118 random labels</strong> on average. A simple linear model struggles with skewed blood tests and extreme outliers like <code class="font-mono">impluse = 1111</code>.
+                        </p>
+                    </div>
+                </div>
+            </main>
+
+            <footer class="slide-footer">
+                <div class="footer-message">
+                    <strong>Takeaway</strong>
+                    <span>Both models beat the majority floor, and these two very different curves give us a strong benchmark for Class 5.</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="keyboard-hint">Navigate: ← → · Space</div>
+                    <div class="slide-dots" id="dots-10"></div>
+                    <div class="footer-counter">10 / 11</div>
+                </div>
+            </footer>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- SLIDE 11: CLASS 4 - DIAGNOSTICS & NEXT STEPS                   -->
+        <!-- ============================================================== -->
+        <div class="slide" id="slide-11">
+            <header class="slide-header">
+                <div class="meta-tag">
+                    <span class="tag-badge-amber">Class 4 · Baseline &amp; Data Check</span>
+                    <span>Diagnostics · Seed Variance, Error Check &amp; Plan for Class 5</span>
+                </div>
+                <h1 class="slide-title">Seed Variance, Error Check &amp; Plan for Class 5</h1>
+                <p class="slide-subtitle">Looking inside each seed and confusion matrix proves why 5 seeds are needed and shows what we will test next week.</p>
+            </header>
+
+            <main class="slide-body">
+                <div class="plot-frame">
+                    <img src="results/plots/fig3_diagnostics.png" alt="Per-seed variance and confusion matrices">
+                </div>
+
+                <div class="grid-3">
+                    <div class="panel panel-primary" style="padding: 0.65rem 0.85rem;">
+                        <strong style="font-size: 0.8rem; color: var(--primary); display: block; margin-bottom: 0.15rem;">1. Big Seed Differences</strong>
+                        <p style="font-size: 0.76rem; margin: 0;">On LogReg, one seed needs <strong>30 labels</strong>, but another needs <strong>230 labels</strong>. This proves 1 seed is not enough (Werner et al., 2024).</p>
+                    </div>
+                    <div class="panel panel-emerald" style="padding: 0.65rem 0.85rem;">
+                        <strong style="font-size: 0.8rem; color: var(--accent-emerald); display: block; margin-bottom: 0.15rem;">2. Test Errors (330 Rows)</strong>
+                        <p style="font-size: 0.76rem; margin: 0;">Random Forest makes only <strong>8 errors</strong> (6 missed heart attacks). Logistic Regression makes <strong>77 errors</strong> (39 missed, 38 false alarms).</p>
+                    </div>
+                    <div class="panel panel-amber" style="padding: 0.65rem 0.85rem;">
+                        <strong style="font-size: 0.8rem; color: var(--accent-amber); display: block; margin-bottom: 0.15rem;">3. Next: Class 5 &amp; Class 6</strong>
+                        <p style="font-size: 0.76rem; margin: 0;"><strong>Class 5:</strong> Add <strong>Entropy</strong>, <strong>Margin</strong>, and <strong>QBC</strong> into this same loop.<br><strong>Class 6:</strong> Remove outliers &amp; test without <code class="font-mono">troponin</code>.</p>
+                    </div>
+                </div>
+            </main>
+
+            <footer class="slide-footer">
+                <div class="footer-message">
+                    <strong>Takeaway</strong>
+                    <span>Data audit and reproducible baselines are done — next week I test if Active Learning saves 30%–40% of labels.</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="keyboard-hint">Navigate: ← → · Space</div>
+                    <div class="slide-dots" id="dots-11"></div>
+                    <div class="footer-counter">11 / 11</div>
+                </div>
+            </footer>
+        </div>
+
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        slides.forEach((_, sIdx) => {
+            const container = document.getElementById(`dots-${sIdx + 1}`);
+            if (container) {
+                for (let i = 0; i < totalSlides; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = `slide-dot ${i === sIdx ? 'active' : ''}`;
+                    dot.title = `Go to slide ${i + 1}`;
+                    dot.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        goToSlide(i);
+                    });
+                    container.appendChild(dot);
+                }
+            }
+        });
+
+        function showSlide(index) {
+            slides.forEach((s, i) => {
+                s.classList.toggle('active', i === index);
+            });
+            document.querySelectorAll('.slide-dot').forEach((dot, idx) => {
+                const targetIdx = idx % totalSlides;
+                dot.classList.toggle('active', targetIdx === index);
+            });
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            showSlide(currentSlide);
+        }
+
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            showSlide(currentSlide);
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            showSlide(currentSlide);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft' || e.key === 'PageUp' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                prevSlide();
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                goToSlide(0);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                goToSlide(totalSlides - 1);
+            } else if (e.key === 'f' || e.key === 'F') {
+                toggleFullScreen();
+            }
+        });
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => console.log(err));
+            } else if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
+    </script>
+</body>
+</html>

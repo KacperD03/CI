@@ -1,0 +1,9 @@
+feature,spearman_corr_train,univariate_roc_auc_train,direction
+troponin,0.679,0.9019,higher -> positive
+kcm,0.2862,0.6697,higher -> positive
+age,0.2481,0.647,higher -> positive
+gender,0.093,0.5454,higher -> positive
+glucose,-0.0474,0.5281,lower -> positive
+pressurelow,0.021,0.5124,higher -> positive
+pressurehight,-0.0178,0.5105,lower -> positive
+impluse,0.0114,0.5068,higher -> positive

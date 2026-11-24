@@ -1,0 +1,391 @@
+{
+  "dataset_file": "Heart Attack.csv",
+  "n_rows": 1319,
+  "n_features": 8,
+  "features": [
+    "age",
+    "gender",
+    "impluse",
+    "pressurehight",
+    "pressurelow",
+    "glucose",
+    "kcm",
+    "troponin"
+  ],
+  "missing_values_total": 0,
+  "missing_per_col": {
+    "age": 0,
+    "gender": 0,
+    "impluse": 0,
+    "pressurehight": 0,
+    "pressurelow": 0,
+    "glucose": 0,
+    "kcm": 0,
+    "troponin": 0,
+    "class": 0
+  },
+  "exact_duplicate_rows": 0,
+  "feature_duplicate_rows": 0,
+  "cross_split_exact_feature_overlap": 0,
+  "class_balance": {
+    "positive": 810,
+    "negative": 509,
+    "positive_pct": 61.41,
+    "negative_pct": 38.59
+  },
+  "split_summary": {
+    "n_train_pool": 989,
+    "n_test_locked": 330,
+    "train_positive_pct": 61.38,
+    "test_positive_pct": 61.52,
+    "impluse_gt_300_in_train": 3,
+    "impluse_gt_300_in_test": 0
+  },
+  "anomalies": {
+    "impluse_gt_220": 3,
+    "impluse_lt_35": 2,
+    "pressurelow_ge_pressurehight": 11,
+    "pressurehight_lt_70": 7,
+    "pressurelow_lt_40": 1,
+    "age_lt_18_or_gt_100": 3,
+    "glucose_gt_400": 21,
+    "kcm_ge_250_count": 27,
+    "troponin_ge_5_count": 21
+  },
+  "anomaly_examples": {
+    "impluse_gt_220": [
+      {
+        "age": 45,
+        "impluse": 1111,
+        "pressurehight": 141,
+        "pressurelow": 95,
+        "kcm": 1.33,
+        "troponin": 1.01,
+        "class": "positive"
+      },
+      {
+        "age": 70,
+        "impluse": 1111,
+        "pressurehight": 141,
+        "pressurelow": 95,
+        "kcm": 3.87,
+        "troponin": 0.028,
+        "class": "positive"
+      },
+      {
+        "age": 32,
+        "impluse": 1111,
+        "pressurehight": 141,
+        "pressurelow": 95,
+        "kcm": 2.66,
+        "troponin": 0.008,
+        "class": "negative"
+      }
+    ],
+    "impluse_lt_35": [
+      {
+        "age": 42,
+        "impluse": 20,
+        "class": "negative"
+      },
+      {
+        "age": 63,
+        "impluse": 20,
+        "class": "positive"
+      }
+    ],
+    "pressurelow_ge_pressurehight": [
+      {
+        "age": 45,
+        "pressurehight": 70,
+        "pressurelow": 92,
+        "class": "negative"
+      },
+      {
+        "age": 55,
+        "pressurehight": 71,
+        "pressurelow": 93,
+        "class": "negative"
+      },
+      {
+        "age": 58,
+        "pressurehight": 78,
+        "pressurelow": 92,
+        "class": "negative"
+      },
+      {
+        "age": 60,
+        "pressurehight": 42,
+        "pressurelow": 64,
+        "class": "negative"
+      },
+      {
+        "age": 53,
+        "pressurehight": 80,
+        "pressurelow": 80,
+        "class": "negative"
+      },
+      {
+        "age": 56,
+        "pressurehight": 67,
+        "pressurelow": 80,
+        "class": "negative"
+      },
+      {
+        "age": 56,
+        "pressurehight": 80,
+        "pressurelow": 80,
+        "class": "positive"
+      },
+      {
+        "age": 57,
+        "pressurehight": 67,
+        "pressurelow": 80,
+        "class": "positive"
+      },
+      {
+        "age": 68,
+        "pressurehight": 80,
+        "pressurelow": 80,
+        "class": "positive"
+      },
+      {
+        "age": 65,
+        "pressurehight": 76,
+        "pressurelow": 154,
+        "class": "positive"
+      },
+      {
+        "age": 39,
+        "pressurehight": 67,
+        "pressurelow": 80,
+        "class": "negative"
+      }
+    ],
+    "pressurehight_lt_70": [
+      {
+        "age": 60,
+        "pressurehight": 42,
+        "pressurelow": 64,
+        "class": "negative"
+      },
+      {
+        "age": 91,
+        "pressurehight": 65,
+        "pressurelow": 53,
+        "class": "negative"
+      },
+      {
+        "age": 56,
+        "pressurehight": 67,
+        "pressurelow": 80,
+        "class": "negative"
+      },
+      {
+        "age": 40,
+        "pressurehight": 65,
+        "pressurelow": 53,
+        "class": "positive"
+      },
+      {
+        "age": 57,
+        "pressurehight": 67,
+        "pressurelow": 80,
+        "class": "positive"
+      },
+      {
+        "age": 43,
+        "pressurehight": 65,
+        "pressurelow": 53,
+        "class": "negative"
+      },
+      {
+        "age": 39,
+        "pressurehight": 67,
+        "pressurelow": 80,
+        "class": "negative"
+      }
+    ],
+    "pressurelow_lt_40": [
+      {
+        "age": 70,
+        "pressurehight": 87,
+        "pressurelow": 38,
+        "class": "positive"
+      }
+    ],
+    "age_lt_18_or_gt_100": [
+      {
+        "age": 14,
+        "class": "negative"
+      },
+      {
+        "age": 103,
+        "class": "positive"
+      },
+      {
+        "age": 103,
+        "class": "positive"
+      }
+    ],
+    "glucose_gt_400": [
+      {
+        "age": 60,
+        "glucose": 462.0,
+        "class": "positive"
+      },
+      {
+        "age": 52,
+        "glucose": 422.0,
+        "class": "negative"
+      },
+      {
+        "age": 50,
+        "glucose": 431.0,
+        "class": "negative"
+      },
+      {
+        "age": 62,
+        "glucose": 408.0,
+        "class": "positive"
+      },
+      {
+        "age": 70,
+        "glucose": 500.0,
+        "class": "positive"
+      },
+      {
+        "age": 29,
+        "glucose": 541.0,
+        "class": "positive"
+      },
+      {
+        "age": 90,
+        "glucose": 415.0,
+        "class": "negative"
+      },
+      {
+        "age": 65,
+        "glucose": 443.0,
+        "class": "negative"
+      },
+      {
+        "age": 65,
+        "glucose": 407.0,
+        "class": "positive"
+      },
+      {
+        "age": 59,
+        "glucose": 404.0,
+        "class": "negative"
+      },
+      {
+        "age": 64,
+        "glucose": 425.0,
+        "class": "positive"
+      },
+      {
+        "age": 78,
+        "glucose": 434.0,
+        "class": "positive"
+      },
+      {
+        "age": 64,
+        "glucose": 406.0,
+        "class": "negative"
+      },
+      {
+        "age": 63,
+        "glucose": 462.0,
+        "class": "negative"
+      },
+      {
+        "age": 60,
+        "glucose": 422.0,
+        "class": "negative"
+      },
+      {
+        "age": 59,
+        "glucose": 431.0,
+        "class": "positive"
+      },
+      {
+        "age": 44,
+        "glucose": 408.0,
+        "class": "negative"
+      },
+      {
+        "age": 60,
+        "glucose": 500.0,
+        "class": "positive"
+      },
+      {
+        "age": 70,
+        "glucose": 541.0,
+        "class": "negative"
+      },
+      {
+        "age": 50,
+        "glucose": 415.0,
+        "class": "positive"
+      },
+      {
+        "age": 54,
+        "glucose": 443.0,
+        "class": "positive"
+      }
+    ],
+    "kcm_ge_250_count": 27,
+    "troponin_ge_5_count": 21
+  },
+  "univariate_feature_power_train_only": [
+    {
+      "feature": "troponin",
+      "spearman_corr_train": 0.679,
+      "univariate_roc_auc_train": 0.9019,
+      "direction": "higher -> positive"
+    },
+    {
+      "feature": "kcm",
+      "spearman_corr_train": 0.2862,
+      "univariate_roc_auc_train": 0.6697,
+      "direction": "higher -> positive"
+    },
+    {
+      "feature": "age",
+      "spearman_corr_train": 0.2481,
+      "univariate_roc_auc_train": 0.647,
+      "direction": "higher -> positive"
+    },
+    {
+      "feature": "gender",
+      "spearman_corr_train": 0.093,
+      "univariate_roc_auc_train": 0.5454,
+      "direction": "higher -> positive"
+    },
+    {
+      "feature": "glucose",
+      "spearman_corr_train": -0.0474,
+      "univariate_roc_auc_train": 0.5281,
+      "direction": "lower -> positive"
+    },
+    {
+      "feature": "pressurelow",
+      "spearman_corr_train": 0.021,
+      "univariate_roc_auc_train": 0.5124,
+      "direction": "higher -> positive"
+    },
+    {
+      "feature": "pressurehight",
+      "spearman_corr_train": -0.0178,
+      "univariate_roc_auc_train": 0.5105,
+      "direction": "lower -> positive"
+    },
+    {
+      "feature": "impluse",
+      "spearman_corr_train": 0.0114,
+      "univariate_roc_auc_train": 0.5068,
+      "direction": "higher -> positive"
+    }
+  ]
+}
